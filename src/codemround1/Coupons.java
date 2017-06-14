@@ -24,13 +24,17 @@ public class Coupons {
 			if (type.equals("I")) {
 				if (couponsIn.containsKey(id)) {
 					Integer j;
-					if ((j = wildmark.higher(i)) == null) {
+					Integer inIndex = couponsIn.get(id);
+					if ((j = wildmark.higher((inIndex == null) ? -1 : inIndex)) == null) {
 						return (i + 1);
 					} else {
 						wildmark.remove(j);
 					}
 				}
 				couponsIn.put(id, i);
+				if(couponsOut.containsKey(id)){
+					couponsOut.remove(id);
+				}
 			} else if (type.equals("O")) {
 				if (!couponsIn.containsKey(id)) {
 					Integer j;
@@ -52,12 +56,14 @@ public class Coupons {
 
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
-		int n = in.nextInt();
-		in.nextLine();
-		String[] log = new String[n];
-		for (int i = 0; i < n; i++) {
-			log[i] = in.nextLine();
+		while(true){
+			int n = in.nextInt();
+			in.nextLine();
+			String[] log = new String[n];
+			for (int i = 0; i < n; i++) {
+				log[i] = in.nextLine();
+			}
+			System.out.println(check(n, log));
 		}
-		System.out.println(check(n, log));
 	}
 }
