@@ -1,30 +1,15 @@
 package codemround1;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
+import java.util.TreeSet;
 
 public class Coupons {
-	public static int getIndex(Set<Integer> wildmark, int start, int end) {
-		int min = Integer.MAX_VALUE;
-		for (int i : wildmark) {
-			if (i > start && i < end && i < min) {
-				min = i;
-			}
-		}
-
-		if (min != Integer.MAX_VALUE) {
-			return min;
-		}
-
-		return -1;
-	}
-
 	public static int check(int n, String[] log) {
-		Map<String, Integer> coupons = new HashMap<String, Integer>();
-		Set<Integer> wildmark = new HashSet<Integer>();
+		Map<String, Integer> couponsIn = new HashMap<String, Integer>();
+		Map<String, Integer> couponsOut = new HashMap<String, Integer>();
+		TreeSet<Integer> wildmark = new TreeSet<Integer>();
 
 		for (int i = 0; i < n; i++) {
 			String item = log[i];
@@ -34,43 +19,45 @@ public class Coupons {
 			}
 
 			String[] array = item.split(" ");
-			if (array[0].equals("I")) {
-				if (coupons.containsKey(array[1])) {
-					int j;
-					if ((j = getIndex(wildmark, coupons.get(array[1]), i)) == -1) {
+			String type = array[0];
+			String id = array[1];
+			if (type.equals("I")) {
+				if (couponsIn.containsKey(id)) {
+					Integer j;
+					if ((j = wildmark.higher(i)) == null) {
 						return (i + 1);
 					} else {
 						wildmark.remove(j);
 					}
 				}
-				coupons.put(array[1], i);
-			}else if(array[0].equals("O")){
-				if(!coupons.containsKey(array[1])){
-					int j;
-					if((j = getIndex(wildmark, -1, i)) == -1){
+				couponsIn.put(id, i);
+			} else if (type.equals("O")) {
+				if (!couponsIn.containsKey(id)) {
+					Integer j;
+					Integer outIndex = couponsOut.get(id);
+					if ((j = wildmark.higher((outIndex == null) ? -1 : outIndex)) == null) {
 						return (i + 1);
-					}else{
+					} else {
 						wildmark.remove(j);
 					}
-				}else{
-					coupons.remove(array[1]);
+				} else {
+					couponsIn.remove(id);
 				}
+				couponsOut.put(id, i);
 			}
 		}
-		
+
 		return -1;
 	}
-	
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
-		while(true){
-			int n = in.nextInt();
-			String[] log = new String[n];
-			for(int i = 0;i < n;i++){
-				String next = in.next();
-				log[i] = next.equals("?") ? next : (next + " " + in.next());
-			}
-			System.out.println(check(n, log));
+		int n = in.nextInt();
+		in.nextLine();
+		String[] log = new String[n];
+		for (int i = 0; i < n; i++) {
+			log[i] = in.nextLine();
 		}
+		System.out.println(check(n, log));
 	}
 }
