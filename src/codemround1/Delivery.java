@@ -5,7 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-
+/**
+ * 没通过全部。
+ * @author liuxl
+ *
+ */
 public class Delivery {
 	static class TrieNode{
 		TrieNode root;
